@@ -27,7 +27,7 @@ func main() {
 	log.Println("Database connection opened")
 
 	// Set up auth
-	auth.Setup(db)
+	go auth.Setup(db)
 }
 ```
 
@@ -41,7 +41,7 @@ the following user table is created in the passwed database
     | password      |
 
 ## API
-This will also register login and register http handlers as described
+This will also register login and register http handlers as described.Those will run on port 8484.
 
 ### Path /login
    * **Method** POST
