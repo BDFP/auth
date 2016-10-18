@@ -18,7 +18,6 @@ import (
 //UserEnv Environment required for user
 type AuthEnv struct {
 	DB *sql.DB
-	T  UserProvider
 }
 
 
@@ -59,18 +58,15 @@ func Secure(protectedPage httprouter.Handle) httprouter.Handle {
 }
 
 func startHTTPServer(db *sql.DB) {
-	server := &Persistence{}
-
 	uEnv := &AuthEnv{
 		DB: db,
-		T:  server,
 	}
 
 	router := httprouter.New()
 
 	//should test by writing request format and automate
-	router.POST("/register", uEnv.Register)
-	router.POST("/login", uEnv.Login)
+	router.POST("/register", uEnv.register)
+	router.POST("/login", uEnv.login)
 	//sth like nodemon for go
 	log.Fatal(http.ListenAndServe(":8484", router))
 }
@@ -85,7 +81,7 @@ func Setup(db *sql.DB) {
 	log.Println("Database connection opened")
 
 	log.Println("Creating schema")
-	CreateSchema(db)
+	createSchema(db)
 	log.Println("Schema Created")
 
 	log.Println("Setting up HTTP Server")
@@ -94,7 +90,7 @@ func Setup(db *sql.DB) {
 
 
 //Register Signup Api
-func (e *AuthEnv) Register(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func (e *AuthEnv) register(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	var user User
 
@@ -105,7 +101,7 @@ func (e *AuthEnv) Register(w http.ResponseWriter, r *http.Request, _ httprouter.
 		return
 	}
 
-	err = e.T.StoreUser(e.DB, &user)
+	err = storeUser(e.DB, &user)
 	if err != nil {
 		WriteErrorResponse(err.Error(), w)
 		return
@@ -119,7 +115,7 @@ func (e *AuthEnv) Register(w http.ResponseWriter, r *http.Request, _ httprouter.
 }
 
 //Login Login API
-func (e *AuthEnv) Login(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func (e *AuthEnv) login(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 
 	var user User
@@ -129,7 +125,7 @@ func (e *AuthEnv) Login(w http.ResponseWriter, r *http.Request, _ httprouter.Par
 	}
 
 	user.Password = HashPassword(user.Password)
-	if err := e.T.GetUser(&user, e.DB); err != nil {
+	if err := getUser(&user, e.DB); err != nil {
 		WriteErrorResponse(err.Error(), w)
 		return
 	}

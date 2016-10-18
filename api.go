@@ -30,9 +30,3 @@ type UserLoginResponse struct {
 	Token string `json:"token"`
 	User  User   `json:"user"`
 }
-
-//UserProvider user mgmt
-type UserProvider interface {
-	StoreUser(db *sql.DB, user *User) error
-	GetUser(user *User, db *sql.DB) error
-}

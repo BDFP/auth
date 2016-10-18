@@ -3,7 +3,7 @@ package auth
 import "database/sql"
 
 //CreateSchema Creates schema for the db
-func CreateSchema(db *sql.DB) error {
+func createSchema(db *sql.DB) error {
 	userStmt := `
 	CREATE TABLE IF NOT EXISTS user (
 		id INT NOT NULL AUTO_INCREMENT,

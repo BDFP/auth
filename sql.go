@@ -7,11 +7,8 @@ import (
 
 )
 
-//Persistence persistence for Persistence
-type Persistence struct{}
-
 //StoreUser save new user
-func (s *Persistence) StoreUser(db *sql.DB, user *User) error {
+func storeUser(db *sql.DB, user *User) error {
 	var id int
 	err := db.QueryRow("SELECT id FROM user WHERE username = ?",
 		user.Username).Scan(&id)
@@ -35,7 +32,7 @@ func (s *Persistence) StoreUser(db *sql.DB, user *User) error {
 }
 
 //GetUser get user from db
-func (s *Persistence) GetUser(user *User, db *sql.DB) error {
+func getUser(user *User, db *sql.DB) error {
 	var passDb string
 	return db.QueryRow(`SELECT id, username, password FROM user
 		 WHERE username = ? AND password = ?`, user.Username, user.Password).Scan(
