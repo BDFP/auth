@@ -40,7 +40,7 @@ the following user table is created in the passwed database
     | username      |
     | password      |
 
- ## API
+## API
 This will also register login and register http handlers as described
 
 ### Path /login
