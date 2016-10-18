@@ -27,32 +27,32 @@ func main() {
 	log.Println("Database connection opened")
 
 	// Set up auth
-	auth.Setup(db)
+	go auth.Setup(db)
 }
 ```
 
 ## Database changes
 the following user table is created in the passwed database
 
-    | user        |
+    | user          |
     | ------------- |
     | id
     | username      |
-    | password |
+    | password      |
 
- ## API
-This will also register login and register http handlers as described
+## API
+This will also register login and register http handlers as described.Those will run on port 8484.
 
-    ### Path /login
-    * **Method** POST
-    * **Request Object**
+### Path /login
+   * **Method** POST
+   * **Request Object**
         ```json
         {
             "username": "your_username",
             "password": "your_password"
         }
         ```
-    * **Response Object**
+   * **Response Object**
         ```json
         {
             "token": "eiofgheriuygij wer",
@@ -62,22 +62,22 @@ This will also register login and register http handlers as described
         }
         ```
 
-    ### Path  /register
-    * **Method** POST
-    * **Request Object**
-        ```json
-        {
-            "username": "your_username",
-            "password": "your_password"
-        }
-        ```
-    * **Response Object**
-        ```json
-        {
-        "message": "Success message"
-    }
-    ```
-
+### Path  /register
+   * **Method** POST
+   * **Request Object**
+   ```
+   {
+       "username": "your_username",
+       "password": "your_password"
+   }
+   ```
+   * **Response Object**
+   ```
+   {
+   	"message": "success"
+   }
+   ```
+   
 ## Middleware
 In order to secure any route with jwt, just use the `auth.Secure(yourHandler)` while registering your router
 Example:
@@ -88,4 +88,3 @@ func startHTTPServer(db *sql.DB) {
 	log.Fatal(http.ListenAndServe(":8484", router))
 }
 ```
-
